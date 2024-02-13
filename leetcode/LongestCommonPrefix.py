@@ -15,7 +15,7 @@ class Solution(object):
 
 objeto = Solution()
 
-#strs = ["flower","flow","flight"]
-strs = ["dog","racecar","car"]
+strs = ["flower","flow","flight"]
+#strs = ["dog","racecar","car"]
 
 print(objeto.longestCommonPrefix(strs))
