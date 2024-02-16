@@ -30,7 +30,7 @@ class Solution:
             res.append(rmax)
         return r
 
-objeto = Solution()
+#objeto = Solution()
 root = [1,2,3]
 root = [1, 3, 2, 5, 3, 0, 9]
-print(objeto.largestValues(root))
+#print(objeto.largestValues(root))
