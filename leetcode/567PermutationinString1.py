@@ -27,7 +27,7 @@ class Solution:
             elif s1Count[index] - 1 == s2Count[index]:
                  matches -= 1
             l += 1
-            return matches == 26
+        return matches == 26
 
 
 objeto = Solution()
