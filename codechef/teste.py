@@ -1,5 +1,2 @@
-# cook your dish here
-for i in range(int(input())):
-    A,B=list(map(int,input().split()))
-
-    print(B//A)
+print(4&6)
+print(4^6)
