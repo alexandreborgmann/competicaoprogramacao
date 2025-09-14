@@ -1,0 +1,7 @@
+select user_id buyer_id, to_char(u.join_date,'yyyy-mm-dd') join_date, ((
+      select count(*)
+        from orders o
+       where o.buyer_id=u.user_id and
+             o.order_date between to_date('01012019','ddmmyyyy') and to_date('31122019','ddmmyyyy')
+)) orders_in_2019 
+from users u

@@ -1,0 +1,37 @@
+select  x.request_at "Day",
+round(
+     ((select count(*)
+       from trips t2,
+     users ud2,
+     users uc2
+ where  t2.client_id=uc2.users_id and
+      t2.driver_id=ud2.users_id and
+      ud2.banned='No' and
+      uc2.banned='No' and
+      t2.request_at=x.request_at and
+      t2.status in ('cancelled_by_client','cancelled_by_driver')
+      ))
+/
+(select greatest(count(*),1)
+       from trips t1,
+     users ud1,
+     users uc1
+ where  t1.client_id=uc1.users_id and
+      t1.driver_id=ud1.users_id and
+      ud1.banned='No' and
+      uc1.banned='No' and
+      t1.request_at=x.request_at)
+ ,2)  "Cancellation Rate"
+from (
+select distinct t.request_at, count(*) 
+from trips t,
+     users ud,
+     users uc
+where t.client_id=uc.users_id and
+      t.driver_id=ud.users_id and
+      ud.banned='No' and
+      uc.banned='No' and
+      t.request_at between '2013-10-01' and '2013-10-03'
+group by t.request_at 
+) x 
+order by 1

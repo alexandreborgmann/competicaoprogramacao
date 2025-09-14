@@ -1,0 +1,6 @@
+select g.employee_id, g.name, count(*) reports_count, round(avg(e.age),0) average_age
+from employees g,
+     employees e
+where e.reports_to=g.employee_id
+group by g.employee_id, g.name
+order by 1

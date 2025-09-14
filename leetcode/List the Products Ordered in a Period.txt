@@ -1,0 +1,7 @@
+select p.product_name, sum(unit) unit
+from products p,
+     orders o
+where o.product_id=p.product_id and
+    o.order_date between to_date('01022020','ddmmyyyy') and to_date('29022020','ddmmyyyy')
+group by p.product_name
+having  sum(unit)>=100

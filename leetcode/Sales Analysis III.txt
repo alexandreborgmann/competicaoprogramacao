@@ -1,0 +1,10 @@
+select distinct t.product_id, t.product_name
+from sales s,
+     product t
+where s.sale_date between to_date('2019-01-01','yyyy-mm-dd') and to_date('2019-03-31','yyyy-mm-dd') and
+      (select count(*)
+         from sales s1
+        where s1.product_id=s.product_id and
+              s1.sale_date not between to_date('2019-01-01','yyyy-mm-dd') and to_date('2019-03-31','yyyy-mm-dd')
+      )=0 and
+      t.product_id=s.product_id 

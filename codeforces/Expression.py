@@ -1,0 +1,10 @@
+a = int(input(""))
+b = int(input(""))
+c = int(input(""))
+lista = []
+lista.append(a+b*c)
+lista.append(a*(b+c))
+lista.append(a*b*c)
+lista.append((a+b)*c)
+lista.append(a+b+c)
+print(max(lista))

@@ -1,0 +1,10 @@
+select x.namedep "Department",x.nameemp "Employee", x.salary "Salary"
+from (select d.name namedep, 
+       e.name nameemp, 
+       e.salary , 
+       dense_rank() over(partition by e.departmentid order by e.departmentid,e.salary desc) ranque
+from employee e,
+     department d
+where d.id=e.departmentid 
+) x 
+where x.ranque<=3

@@ -1,0 +1,6 @@
+select a.player_id, to_char(a.event_date,'yyyy-mm-dd') first_login
+from activity a
+where a.event_date=(select min(a1.event_date)
+                      from activity a1
+                    where a1.player_id=a.player_id
+)

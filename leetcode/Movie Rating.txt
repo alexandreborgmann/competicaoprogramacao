@@ -1,0 +1,22 @@
+select x.name results
+from (
+select u.name, count(*)
+from movierating mr,
+     users u
+where u.user_id=mr.user_id
+group by u.name
+order by 2 desc,1
+) x
+where rownum=1
+union all
+select title results
+from (
+select m.title, avg(mr.rating) 
+from movierating mr,
+     movies  m
+where m.movie_id=mr.movie_id and
+      mr.created_at between to_date('01022020','ddmmyyyy') and to_date('28022020','ddmmyyyy')
+group by m.title
+order by 2 desc,1
+) y
+where rownum=1

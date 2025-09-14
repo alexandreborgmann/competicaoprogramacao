@@ -1,0 +1,6 @@
+delete person p
+where p.id not in 
+      (select min(p1.id)
+         from person p1
+        where p1.email=p.email
+      )

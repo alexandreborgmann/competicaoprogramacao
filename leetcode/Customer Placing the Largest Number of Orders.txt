@@ -1,0 +1,7 @@
+select x.customer_number
+from (
+select o.customer_number,count(*) over (partition by customer_number) conta
+from orders o
+order by 2 desc
+) x
+where rownum<=1
