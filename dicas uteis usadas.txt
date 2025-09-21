@@ -1,0 +1,20 @@
+Ler eof
+
+while True:
+    try:
+        linha = input()
+        if linha == "": 
+            break
+        t = int(linha)
+    except EOFError:
+        break
+
+Ler linha de valores com delimitador espaço
+h, z, l = map(int, input().split())
+
+
+Cifra de César
+nova_letra = chr((ord(letra) - base + deslocamento) % 26 + base)
+decifrar de César
+nova_letra = chr((ord(letra) - base - deslocamento) % 26 + base)
+

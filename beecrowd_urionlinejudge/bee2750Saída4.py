@@ -38,8 +38,9 @@ Saída
 A saída será impressa conforme a figura acima.
 '''
 print("-" * 39)
-print("| decimal   |  octal  |  Hexadecimal  |")
+print("|  decimal  |  octal  |  Hexadecimal  |")
 print("-" * 39)
 for i in range(16):
-    print(f"|{i:7d}    |{i:5o}    |{i:8X}       |")
-print("-" * 39, end="\n")
+    # colunas com larguras fixas que reproduzem a saída do enunciado
+    print(f"|{i:>7}    |{i:>5o}    |{format(i,'X'):^15}|")
+print("-" * 39)
