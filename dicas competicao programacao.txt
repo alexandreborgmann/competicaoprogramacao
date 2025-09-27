@@ -1,0 +1,56 @@
+Ler eof
+
+% resto
+// divisao inteira
+
+while True:
+    try:
+        linha = input()
+        if linha == "": 
+            break
+        t = int(linha)
+    except (EOFError, ValueError):
+        break
+
+Ler linha de valores com delimitador espaço
+h, z, l = map(int, input().split())
+
+print(" ".join(res)) não coloca espaço no começo nem no final.
+print(l[i],end="") -- nao pular linha
+print(f"{frase:>{largura}}")
+
+
+alfabeto = {chr(i): 0 for i in range(97, 123)}
+alfabeto.values()
+alfabeto.items()
+list(idiomas.keys())[0]
+
+max(vetor, key=len)
+
+Qualquer número XOR 0 é o próprio número. Por exemplo: a ^ 0 = a.
+
+Qualquer número XOR ele mesmo é 0. Por exemplo: a ^ a = 0.
+
+Cifra de César
+nova_letra = chr((ord(letra) - base + deslocamento) % 26 + base)
+decifrar de César
+nova_letra = chr((ord(letra) - base - deslocamento) % 26 + base)
+
+Complexidade de Tempo: O(n). O loop percorre a lista de n elementos uma única vez, então o tempo de execução é linear em relação ao tamanho da entrada.
+
+Complexidade de Espaço: O(1). A solução usa apenas uma variável para armazenar o resultado (single), independentemente do tamanho da lista. Isso significa que o espaço extra necessário é constante.
+
+
+
+conjunto1 = {1, 2, 3}
+
+# Usando set() - útil para converter listas
+conjunto2 = set([1, 2, 2, 3, 3])  # Resultado: {1, 2, 3}
+
+# Conjunto vazio (não pode usar {} pois cria dicionário)
+conjunto_vazio = set()
+a.add(5)
+a.remove(3)
+
+98991001011010019989
+98991001011010019989
