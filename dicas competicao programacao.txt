@@ -1,10 +1,13 @@
-input() retornar um string
+Complexidade de Tempo: O(n). O loop percorre a lista de n elementos uma única vez, então o tempo de execução é linear em relação ao tamanho da entrada.
 
-Ler eof
+Complexidade de Espaço: O(1). A solução usa apenas uma variável para armazenar o resultado (single), independentemente do tamanho da lista. Isso significa que o espaço extra necessário é constante.
+
+input() retorna uma string
 
 % resto
 // divisao inteira
 
+Ler eof
 while True:
     try:
         linha = input()
@@ -27,7 +30,6 @@ print(l[i],end="") -- nao pular linha
 print(f"{frase:>{largura}}")
 print(f"{5:.5f}")
 
-
 alfabeto = {chr(i): 0 for i in range(97, 123)}
 alfabeto.values()
 alfabeto.items()
@@ -36,8 +38,8 @@ list(idiomas.keys())[0]
 max(vetor, key=len)
 
 Qualquer número XOR 0 é o próprio número. Por exemplo: a ^ 0 = a.
-
 Qualquer número XOR ele mesmo é 0. Por exemplo: a ^ a = 0.
+n & (n-1) é potencia de 2
 
 Wrap-around é essencial para reutilizar espaços
 
@@ -46,9 +48,6 @@ nova_letra = chr((ord(letra) - base + deslocamento) % 26 + base)
 decifrar de César
 nova_letra = chr((ord(letra) - base - deslocamento) % 26 + base)
 
-Complexidade de Tempo: O(n). O loop percorre a lista de n elementos uma única vez, então o tempo de execução é linear em relação ao tamanho da entrada.
-
-Complexidade de Espaço: O(1). A solução usa apenas uma variável para armazenar o resultado (single), independentemente do tamanho da lista. Isso significa que o espaço extra necessário é constante.
 
 conjunto1 = {1, 2, 3}
 
@@ -59,3 +58,4 @@ conjunto2 = set([1, 2, 2, 3, 3])  # Resultado: {1, 2, 3}
 conjunto_vazio = set()
 a.add(5)
 a.remove(3)
+

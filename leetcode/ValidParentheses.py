@@ -46,5 +46,4 @@ if len(s)<0 or len(s)>=(10**4):
     exit(1)
 
 objeto = Solution()
-
 print(objeto.isValid(s))

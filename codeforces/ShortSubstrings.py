@@ -3,13 +3,10 @@ if vezes>100 or vezes<1:
     exit(1)
 for i in range(vezes):
     a = input("")
-    b = ''
-    pulo = 0
-    for i in range(len(a)):
-        if i<len(a)-1 and pulo==0:
-            if a[i]==a[i+1]:
-                pulo=1
-                continue
-        b=b+a[i]
-        pulo=0
+    b = a[0:2]
+    for i in range(3,len(a)-2,3):
+        b= b + a[i]
+        print(i, a[i])
+    if len(a) > 2:
+        b +=a[-2:]
     print(b)
