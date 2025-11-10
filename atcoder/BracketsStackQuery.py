@@ -267,22 +267,37 @@ sequence.
 '''
 q = int(input())
 s = []
-soma = { '(': 0, ')': 0}
-for i in range(q):
-    try:
-        o, c = map(str, input().split())
-    except:
-        o = '2'
+balance = 0
+min_prefix = 0  # mínimo balance em qualquer prefixo
 
-    if o == '2':
-        c = s[len(s)-1]
-        s[len(s)-1] = None
-        soma[c] -= 1
-    else:
-        soma[c] += 1
-        s.append(c)
-    if soma['('] != soma[')']:
-        print('No')
-    else:
-        print('Yes')
+for _ in range(q):
+    data = input().split()
 
+    if data[0] == '1':
+        c = data[1]
+        s.append((c, balance, min_prefix))
+
+        if c == '(':
+            balance += 1
+        else:
+            balance -= 1
+            min_prefix = min(min_prefix, balance)
+    else:  # type 2
+        c, old_balance, old_min = s.pop()
+
+        if c == '(':
+            balance -= 1
+        else:
+            balance += 1
+
+        # Restaurar min_prefix do estado anterior
+        if s:
+            min_prefix = s[-1][2]
+        else:
+            min_prefix = 0
+
+    # Verificação final
+    if balance == 0 and min_prefix >= 0:
+        print("Yes")
+    else:
+        print("No")

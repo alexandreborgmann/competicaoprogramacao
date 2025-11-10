@@ -90,3 +90,24 @@ the
 '''
 n, k = map(int, input().split())
 s = input()
+
+# Dicionário para contar ocorrências de cada substring
+count_dict = {}
+
+# Gerar todas as substrings de comprimento K
+for i in range(n - k + 1):
+    substring = s[i:i + k]
+    count_dict[substring] = count_dict.get(substring, 0) + 1
+
+# Encontrar a contagem máxima
+max_count = max(count_dict.values())
+
+# Coletar todas as substrings com contagem máxima
+max_substrings = [substring for substring, count in count_dict.items() if count == max_count]
+
+# Ordenar lexicograficamente
+max_substrings.sort()
+
+# Saída
+print(max_count)
+print(" ".join(max_substrings))

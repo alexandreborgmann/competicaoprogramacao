@@ -1,9 +1,9 @@
-beecrowd SQL | 2991
-Estatísticas dos Departamentos
+beecrowd SQL | 2992
+Divisões Com Maiores Médias Salariais
 Angelo Brayner BR Brasil
 
 Timelimit: 1
-Para cada departamento da empresa, mostrar o nome dele, a quantidade de empregados lotados, a média salarial, o maior salário e o menor salário. O resultado deve estar em ordem decrescente por média salarial.
+Listar as divisões com maiores médias salariais dentro de seus departamentos. A saída deverá apresentar o nome do departamento, o nome da divisão com maior média salarial do departamento e a média salarial da divisão. O resultado deve estar em ordem decrescente usando a média salarial.
 
 Dica: Você pode utilizar a função COALESCE(check_expression , 0) para substituir algum valor null por zero; Além disso, você também pode utilizar a função ROUND(value, 2) para exibir os valores com 2 casas decimais.
 
@@ -194,57 +194,54 @@ cod_venc	nome	tipo	valor
 13	Gratificacao por Titularidade - Mestrado	V	800
  
 Exemplo de saída
-Nome Departamento	Numero de Empregados	Media Salarial	Maior Salario	Menor Salario
-TI	9	6200.00	10350.00	0
-Engenharia	5	6030.00	10650.00	1900.00
-Contabilidade	6	5133.33	8700.00	3000.00
+departamento	divisao	media
+TI	Analise de Sistemas	7733.33
+Engenharia	Concreto	6316.67
+Contabilidade	Passivo	5900.00
+  
  
- 
-WITH vencimentos AS (
+WITH salario_por_empregado AS (
     SELECT 
-        ev.matr,
-        di.cod_dep,
-        SUM(v.valor) AS total_venc
-    FROM emp_venc ev
-    JOIN vencimento v ON ev.cod_venc = v.cod_venc
-    JOIN empregado e ON ev.matr = e.matr
-    JOIN divisao di ON e.lotacao_div = di.cod_divisao
-    GROUP BY ev.matr, di.cod_dep
-),
-descontos AS (
-    SELECT 
-        ed.matr,
-        di.cod_dep,
-        SUM(dc.valor) AS total_desc
-    FROM emp_desc ed
-    JOIN desconto dc ON ed.cod_desc = dc.cod_desc
-    JOIN empregado e ON ed.matr = e.matr
-    JOIN divisao di ON e.lotacao_div = di.cod_divisao
-    GROUP BY ed.matr, di.cod_dep
-),
-emp_base AS (
-    -- todos os empregados com o departamento correspondente (via divisao)
-    SELECT e.matr, di.cod_dep
+        e.matr,
+        e.lotacao_div,
+        (SELECT COALESCE(SUM(v.valor), 0) 
+         FROM emp_venc ev 
+         JOIN vencimento v ON ev.cod_venc = v.cod_venc 
+         WHERE ev.matr = e.matr) as total_vencimentos,
+        (SELECT COALESCE(SUM(d.valor), 0) 
+         FROM emp_desc ed 
+         JOIN desconto d ON ed.cod_desc = d.cod_desc 
+         WHERE ed.matr = e.matr) as total_descontos
     FROM empregado e
-    JOIN divisao di ON e.lotacao_div = di.cod_divisao
 ),
-salario_empregado AS (
-    -- para cada empregado (mesmo que não tenha vencimentos/descontos) calcula salario_liquido
-    SELECT
-        b.matr,
-        b.cod_dep,
-        COALESCE(v.total_venc, 0) - COALESCE(d.total_desc, 0) AS salario_liquido
-    FROM emp_base b
-    LEFT JOIN vencimentos v ON b.matr = v.matr AND b.cod_dep = v.cod_dep
-    LEFT JOIN descontos d  ON b.matr = d.matr AND b.cod_dep = d.cod_dep
+salario_liquido AS (
+    SELECT 
+        matr,
+        lotacao_div,
+        total_vencimentos - total_descontos as salario
+    FROM salario_por_empregado
+),
+medias_por_divisao AS (
+    SELECT 
+        d.cod_dep,
+        d.nome as nome_departamento,
+        div.cod_divisao,
+        div.nome as nome_divisao,
+        ROUND(AVG(s.salario)::numeric, 2) as media_salarial
+    FROM salario_liquido s
+    JOIN divisao div ON s.lotacao_div = div.cod_divisao
+    JOIN departamento d ON div.cod_dep = d.cod_dep
+    GROUP BY d.cod_dep, d.nome, div.cod_divisao, div.nome
+),
+divisoes_rank AS (
+    SELECT 
+        nome_departamento as departamento,
+        nome_divisao as divisao,
+        media_salarial as media,
+        RANK() OVER (PARTITION BY cod_dep ORDER BY media_salarial DESC) as posicao
+    FROM medias_por_divisao
 )
-SELECT
-    dep.nome AS "Nome Departamento",
-    COUNT(se.matr) AS "Numero de Empregados",
-    ROUND(COALESCE(AVG(COALESCE(se.salario_liquido, 0)),0), 2) AS "Media Salarial",
-    ROUND(COALESCE(MAX(COALESCE(se.salario_liquido, 0)),0), 2) AS "Maior Salario",
-    ROUND(COALESCE(MIN(COALESCE(se.salario_liquido, 0)),0), 2) AS "Menor Salario"
-FROM departamento dep
-LEFT JOIN salario_empregado se ON dep.cod_dep = se.cod_dep
-GROUP BY dep.nome
-ORDER BY ROUND(COALESCE(AVG(COALESCE(se.salario_liquido,0)),0),2) DESC;
+SELECT departamento, divisao, media
+FROM divisoes_rank
+WHERE posicao = 1
+ORDER BY media DESC;

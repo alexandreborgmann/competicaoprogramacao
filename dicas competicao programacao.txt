@@ -51,7 +51,7 @@ nova_letra = chr((ord(letra) - base - deslocamento) % 26 + base)
 
 conjunto1 = {1, 2, 3}
 
-# Usando set() - útil para converter listas
+# Usando set() - útil para converter listas sem repetição
 conjunto2 = set([1, 2, 2, 3, 3])  # Resultado: {1, 2, 3}
 
 # Conjunto vazio (não pode usar {} pois cria dicionário)
@@ -59,3 +59,49 @@ conjunto_vazio = set()
 a.add(5)
 a.remove(3)
 
+transformar numero para binario format(n,'b') f'{n:b}'
+
+inicial lista com tamanho
+inicial = [0] * len(target)
+
+
+Linked List
+
+from typing import List, Optional
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+		
+def create_linked_list(lst: List[int]) -> Optional[ListNode]:
+    if not lst:
+        return None
+    head = ListNode(lst[0])
+    current = head
+    for val in lst[1:]:
+        current.next = ListNode(val)
+        current = current.next
+    return head
+
+def linked_list_to_list(head: Optional[ListNode]) -> List[int]:
+    result = []
+    current = head
+    while current:
+        result.append(current.val)
+        current = current.next
+    return result
+	
+Inicializa Matriz
+grid = [[0] * n for _ in range(m)]
+
+implementa filas de prioridade 
+import heapq 
+heap = []
+heapq.heappush(heap, 5)
+heapq.heappush(heap, 2)
+heapq.heappush(heap, 8)
+heapq.heappush(heap, 1)
+print(heap)
+
+menor = heapq.heappop(heap)

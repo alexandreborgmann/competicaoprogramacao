@@ -1,9 +1,9 @@
-beecrowd SQL | 2991
-Estatísticas dos Departamentos
+beecrowd SQL | 2997
+Pagamento dos Empregados
 Angelo Brayner BR Brasil
 
 Timelimit: 1
-Para cada departamento da empresa, mostrar o nome dele, a quantidade de empregados lotados, a média salarial, o maior salário e o menor salário. O resultado deve estar em ordem decrescente por média salarial.
+Para cada empregado, listar nome do departamento, nome do empregado, salário bruto, total de descontos e salário líquido. A saída deve estar agrupada por departamento e divisão. Dentro de cada divisão, a lista de empregados deve estar de forma decrescente por salário líquido.
 
 Dica: Você pode utilizar a função COALESCE(check_expression , 0) para substituir algum valor null por zero; Além disso, você também pode utilizar a função ROUND(value, 2) para exibir os valores com 2 casas decimais.
 
@@ -194,57 +194,55 @@ cod_venc	nome	tipo	valor
 13	Gratificacao por Titularidade - Mestrado	V	800
  
 Exemplo de saída
-Nome Departamento	Numero de Empregados	Media Salarial	Maior Salario	Menor Salario
-TI	9	6200.00	10350.00	0
-Engenharia	5	6030.00	10650.00	1900.00
-Contabilidade	6	5133.33	8700.00	3000.00
+Departamento	Empregado	Salario Bruto	Total Desconto	Salario Liquidoaws
+Engenharia	Jose da Silva	11050.00	400.00	10650.00
+TI	Andre	11050.00	700.00	10350.00
+TI	Barbara	9200.00	0	9200.00
+Contabilidade	Jose Sampaio	9400.00	700.00	8700.00
+TI	Yami	8000.00	300.00	7700.00
+TI	Flor	7200.00	0	7200.00
+Engenharia	Lucas	6700.00	0	6700.00
+TI	Lina	6600.00	0	6600.00
+Engenharia	Silverio dos Reis	6700.00	300.00	6400.00
+TI	Ricardo Reis	6100.00	0	6100.00
+Contabilidade	Rebeca	6000.00	0	6000.00
+Contabilidade	Jose Maria	6000.00	0	6000.00
+TI	Joao da Silva	5000.00	0	5000.00
+Engenharia	Marina	4500.00	0	4500.00
+Contabilidade	Yasmim	3800.00	0	3800.00
+TI	Ines	3650.00	0	3650.00
+Contabilidade	Maria Jose	3300.00	0	3300.00
+Contabilidade	Sofia	3000.00	0	3000.00
+Engenharia	Reis da Silva	1900.00	0	1900.00
+TI	Angelo	0	0	0
  
  
-WITH vencimentos AS (
+WITH cumulative_profits AS (
     SELECT 
-        ev.matr,
-        di.cod_dep,
-        SUM(v.valor) AS total_venc
-    FROM emp_venc ev
-    JOIN vencimento v ON ev.cod_venc = v.cod_venc
-    JOIN empregado e ON ev.matr = e.matr
-    JOIN divisao di ON e.lotacao_div = di.cod_divisao
-    GROUP BY ev.matr, di.cod_dep
+        c.id,
+        c.name,
+        c.investment,
+        o.month,
+        SUM(o.profit) OVER (PARTITION BY c.id ORDER BY o.month) as cumulative,
+        SUM(o.profit) OVER (PARTITION BY c.id) as total_profit
+    FROM clients c
+    JOIN operations o ON c.id = o.client_id
 ),
-descontos AS (
+payback_months AS (
     SELECT 
-        ed.matr,
-        di.cod_dep,
-        SUM(dc.valor) AS total_desc
-    FROM emp_desc ed
-    JOIN desconto dc ON ed.cod_desc = dc.cod_desc
-    JOIN empregado e ON ed.matr = e.matr
-    JOIN divisao di ON e.lotacao_div = di.cod_divisao
-    GROUP BY ed.matr, di.cod_dep
-),
-emp_base AS (
-    -- todos os empregados com o departamento correspondente (via divisao)
-    SELECT e.matr, di.cod_dep
-    FROM empregado e
-    JOIN divisao di ON e.lotacao_div = di.cod_divisao
-),
-salario_empregado AS (
-    -- para cada empregado (mesmo que não tenha vencimentos/descontos) calcula salario_liquido
-    SELECT
-        b.matr,
-        b.cod_dep,
-        COALESCE(v.total_venc, 0) - COALESCE(d.total_desc, 0) AS salario_liquido
-    FROM emp_base b
-    LEFT JOIN vencimentos v ON b.matr = v.matr AND b.cod_dep = v.cod_dep
-    LEFT JOIN descontos d  ON b.matr = d.matr AND b.cod_dep = d.cod_dep
+        id,
+        name,
+        investment,
+        MIN(CASE WHEN cumulative >= investment THEN month END) as month_of_payback,
+        MAX(cumulative) - investment as return
+    FROM cumulative_profits
+    GROUP BY id, name, investment
+    HAVING MIN(CASE WHEN cumulative >= investment THEN month END) IS NOT NULL
 )
-SELECT
-    dep.nome AS "Nome Departamento",
-    COUNT(se.matr) AS "Numero de Empregados",
-    ROUND(COALESCE(AVG(COALESCE(se.salario_liquido, 0)),0), 2) AS "Media Salarial",
-    ROUND(COALESCE(MAX(COALESCE(se.salario_liquido, 0)),0), 2) AS "Maior Salario",
-    ROUND(COALESCE(MIN(COALESCE(se.salario_liquido, 0)),0), 2) AS "Menor Salario"
-FROM departamento dep
-LEFT JOIN salario_empregado se ON dep.cod_dep = se.cod_dep
-GROUP BY dep.nome
-ORDER BY ROUND(COALESCE(AVG(COALESCE(se.salario_liquido,0)),0),2) DESC;
+SELECT 
+    name,
+    investment,
+    month_of_payback,
+    return
+FROM payback_months
+ORDER BY return DESC;
